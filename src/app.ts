@@ -1,16 +1,16 @@
-import 'reflect-metadata';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import express from 'express';
-import helmet from 'helmet';
-import hpp from 'hpp';
-import morgan from 'morgan';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
-import { DB } from '@database';
-import { Routes } from '@interfaces/routes.interface';
-import { ErrorMiddleware } from '@middlewares/error.middleware';
-import { logger, stream } from '@utils/logger';
+import "reflect-metadata";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import hpp from "hpp";
+import morgan from "morgan";
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@config";
+import { DB } from "@database";
+import { Routes } from "@interfaces/routes.interface";
+import { ErrorMiddleware } from "@middlewares/error.middleware";
+import { logger, stream } from "@utils/logger";
 
 export class App {
   public app: express.Application;
@@ -19,7 +19,7 @@ export class App {
 
   constructor(routes: Routes[]) {
     this.app = express();
-    this.env = NODE_ENV || 'development';
+    this.env = NODE_ENV || "development";
     this.port = PORT || 3000;
 
     this.connectToDatabase();
@@ -31,10 +31,10 @@ export class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      logger.info(`=================================`);
+      logger.info("=================================");
       logger.info(`======= ENV: ${this.env} =======`);
       logger.info(`🚀 App listening on the port ${this.port}`);
-      logger.info(`=================================`);
+      logger.info("=================================");
     });
   }
 
@@ -59,7 +59,7 @@ export class App {
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach(route => {
-      this.app.use('/', route.router);
+      this.app.use("/", route.router);
     });
   }
 

@@ -1,9 +1,9 @@
-import { hash } from 'bcrypt';
-import { Service } from 'typedi';
-import { DB } from '@database';
-import { CreateUserDto } from '@dtos/users.dto';
-import { HttpException } from '@/exceptions/HttpException';
-import { User } from '@interfaces/users.interface';
+import { hash } from "bcrypt";
+import { Service } from "typedi";
+import { DB } from "@database";
+import { CreateUserDto } from "@dtos/users.dto";
+import { HttpException } from "@/exceptions/HttpException";
+import { User } from "@interfaces/users.interface";
 
 @Service()
 export class UserService {

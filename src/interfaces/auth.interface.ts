@@ -2,10 +2,13 @@ import { Request } from "express";
 import { User } from "@interfaces/users.interface";
 
 export interface DataStoredInToken {
-  id: number;
+  sid: string;
+  uid: string;
+  iat?: number;
+  exp?: number;
 }
 
-export interface TokenData {
+export interface TokenPayload {
   token: string;
   expiresIn: number;
 }

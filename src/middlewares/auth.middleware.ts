@@ -1,11 +1,12 @@
-import { NextFunction, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
-import { SECRET_KEY } from "@config";
+
 import { DB } from "@database";
+import { SECRET_KEY } from "@config";
 import { HttpException } from "@exceptions/HttpException";
 import { DataStoredInToken, RequestWithUser } from "@interfaces/auth.interface";
 
-const getAuthorization = req => {
+const getAuthorization = (req: Request) => {
   const coockie = req.cookies["Authorization"];
   if (coockie) return coockie;
 
@@ -20,8 +21,8 @@ export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: 
     const Authorization = getAuthorization(req);
 
     if (Authorization) {
-      const { id } = verify(Authorization, SECRET_KEY) as DataStoredInToken;
-      const findUser = await DB.Users.findByPk(id);
+      const { uid } = verify(Authorization, SECRET_KEY) as DataStoredInToken;
+      const findUser = await DB.Users.findByPk(uid);
 
       if (findUser) {
         req.user = findUser;

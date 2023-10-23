@@ -1,22 +1,27 @@
 import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { Service } from "typedi";
+
 import { SECRET_KEY } from "@config";
 import { DB } from "@database";
-import { CreateUserDto } from "@dtos/users.dto";
-import { HttpException } from "@/exceptions/HttpException";
-import { DataStoredInToken, TokenData } from "@interfaces/auth.interface";
-import { User } from "@interfaces/users.interface";
 
-const createToken = (user: User): TokenData => {
-  const dataStoredInToken: DataStoredInToken = { id: user.id };
+import { User } from "@interfaces/users.interface";
+import { UserSession } from "@interfaces/users_sessions.interface";
+
+import { DataStoredInToken, TokenPayload } from "@interfaces/auth.interface";
+
+import { CreateUserDto } from "@dtos/users.dto";
+import { HttpException } from "@exceptions/HttpException";
+
+const createAccessToken = (user: User, userSession: UserSession): TokenPayload => {
+  const dataStoredInToken: DataStoredInToken = { sid: userSession.uuid, uid: user.uuid };
   const expiresIn: number = 60 * 60;
 
-  return { expiresIn, token: sign(dataStoredInToken, SECRET_KEY, { expiresIn }) };
-};
+  return { expiresIn: expiresIn, token: sign(dataStoredInToken, SECRET_KEY, { expiresIn }) };
+};  
 
-const createCookie = (tokenData: TokenData): string => {
-  return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+const createCookie = (TokenPayload: TokenPayload): string => {
+  return `Authorization=${TokenPayload.token}; HttpOnly; Max-Age=${TokenPayload.expiresIn};`;
 };
 
 @Service()
@@ -38,8 +43,8 @@ export class AuthService {
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(409, "Password not matching");
 
-    const tokenData = createToken(findUser);
-    const cookie = createCookie(tokenData);
+    const TokenPayload = createAccessToken(findUser, null);
+    const cookie = createCookie(TokenPayload);
 
     return { cookie, findUser };
   }

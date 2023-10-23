@@ -33,7 +33,7 @@ export class UserService {
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
     const hashedPassword = await hash(userData.password, 10);
-    await DB.Users.update({ ...userData, password: hashedPassword }, { where: { id: userId } });
+    await DB.Users.update({ ...userData, password: hashedPassword }, { where: { pk: userId } });
 
     const updateUser: User = await DB.Users.findByPk(userId);
     return updateUser;
@@ -43,7 +43,7 @@ export class UserService {
     const findUser: User = await DB.Users.findByPk(userId);
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
-    await DB.Users.destroy({ where: { id: userId } });
+    await DB.Users.destroy({ where: { pk: userId } });
 
     return findUser;
   }

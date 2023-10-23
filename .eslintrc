@@ -1,6 +1,14 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "eslint:recommended", 
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "plugin:typescript-sort-keys/recommended",
+    "plugin:@typescript-eslint/recommended",
+  ],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module"
@@ -11,6 +19,7 @@
   "rules": {
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
+    "prefer-const": "error",
     "@typescript-eslint/explicit-member-accessibility": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/no-parameter-properties": 0,

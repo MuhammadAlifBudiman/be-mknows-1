@@ -27,7 +27,6 @@ export class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
-    // this.initializeSwagger();
   }
 
   public listen() {
@@ -63,22 +62,6 @@ export class App {
       this.app.use("/", route.router);
     });
   }
-
-  // private initializeSwagger() {
-  //   const options = {
-  //     swaggerDefinition: {
-  //       info: {
-  //         title: 'REST API',
-  //         version: '1.0.0',
-  //         description: 'Example docs',
-  //       },
-  //     },
-  //     apis: ['swagger.yaml'],
-  //   };
-
-  //   const specs = swaggerJSDoc(options);
-  //   this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-  // }
 
   private initializeErrorHandling() {
     this.app.use(ErrorMiddleware);

@@ -14,6 +14,10 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
     collate: "utf8mb4_general_ci",
     underscored: true,
     freezeTableName: true,
+    
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    deletedAt: "deleted_at",
   },
   pool: {
     min: 0,

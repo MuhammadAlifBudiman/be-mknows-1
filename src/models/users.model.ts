@@ -6,6 +6,7 @@ export type UserCreationAttributes = Optional<User, "pk" | "uuid" | "full_name" 
 export class UserModel extends Model<User, UserCreationAttributes> implements User {
   public pk: number;
   public uuid: string;
+  
   public full_name?: string;
   public display_picture?: number;
   public email: string;

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Container } from "typedi";
+import asyncHandler from "express-async-handler";
 
 import { CreateUserDto } from "@dtos/users.dto";
 import { User } from "@interfaces/users.interface";
@@ -8,7 +9,7 @@ import { UserService } from "@services/users.service";
 export class UserController {
   public user = Container.get(UserService);
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  public getUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const findAllUsersData: User[] = await this.user.findAllUser();
 
@@ -16,9 +17,9 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  };
+  });
 
-  public getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  public getUserById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.id);
       const findOneUserData: User = await this.user.findUserById(userId);
@@ -27,9 +28,9 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  };
+  });
 
-  public createUser = async (req: Request, res: Response, next: NextFunction) => {
+  public createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData: CreateUserDto = req.body;
       const createUserData: User = await this.user.createUser(userData);
@@ -38,9 +39,9 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  };
+  });
 
-  public updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  public updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.id);
       const userData: CreateUserDto = req.body;
@@ -50,9 +51,9 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  };
+  });
 
-  public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.id);
       const deleteUserData: User = await this.user.deleteUser(userId);
@@ -61,5 +62,5 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  };
+  });
 }

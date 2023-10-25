@@ -1,12 +1,12 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
 import { User } from "@interfaces/users.interface";
 
-export type UserCreationAttributes = Optional<User, "pk" | "uuid" | "display_picture">;
+export type UserCreationAttributes = Optional<User, "pk" | "uuid" | "full_name" | "display_picture">;
 
 export class UserModel extends Model<User, UserCreationAttributes> implements User {
   public pk: number;
   public uuid: string;
-  public full_name: string;
+  public full_name?: string;
   public display_picture?: number;
   public email: string;
   public password: string;
@@ -26,15 +26,16 @@ export default function (sequelize: Sequelize): typeof UserModel {
       },
       uuid: {
         allowNull: true,
+        defaultValue: DataTypes.UUIDV4,
         type: DataTypes.STRING(52),
       },
       full_name: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING(52),
       },
       display_picture: {
-        allowNull: false,
-        type: DataTypes.NUMBER(),
+        allowNull: true,
+        type: DataTypes.INTEGER(),
       },
       email: {
         allowNull: false,

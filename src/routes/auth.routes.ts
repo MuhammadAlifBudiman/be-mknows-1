@@ -18,9 +18,7 @@ export class AuthRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(`/v1/${this.path}/register`, 
-      ValidationMiddleware(CreateUserDto), 
-      this.auth.signUp);
+    this.router.post(`/v1/${this.path}/register`, ValidationMiddleware(CreateUserDto), this.auth.signUp);
     this.router.post(`/v1/${this.path}/login`, ValidationMiddleware(CreateUserDto), this.auth.logIn);
     this.router.post(`/v1/${this.path}/logout`, AuthMiddleware, this.auth.logOut);
   }

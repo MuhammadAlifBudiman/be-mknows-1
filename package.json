@@ -1,9 +1,9 @@
 {
-  "name": "be-kampusgratis-rebuild",
+  "name": "be-bootcamp",
   "version": "0.0.0",
-  "description": "TypeScript + Sequelize + MySQL + Express API Server",
+  "description": "TypeScript + Sequelize + PostgreSQL + Express API Server",
   "author": "M-Knows Consulting",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon -L",

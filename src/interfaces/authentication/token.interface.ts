@@ -2,8 +2,9 @@ import { Request } from "express";
 import { User } from "@interfaces/user.interface";
 
 export interface DataStoredInToken {
-  sid?: string;
-  uid: string;
+  sid?: string; // user session uuid 
+  uid: string; // user uuid
+
   iat?: number;
   exp?: number;
 }

@@ -15,5 +15,6 @@ export class AccountRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`/v1/${this.path}/profile/me`, AuthMiddleware, this.account.getMyProfile);
+    this.router.get(`/v1/${this.path}/sessions/me`, AuthMiddleware, this.account.getMySessionsHistories);
   }
 }

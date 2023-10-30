@@ -5,8 +5,11 @@ import { SECRET_KEY } from "@config/index";
 import { HttpException } from "@exceptions/HttpException";
 
 import { UserSession } from "@interfaces/user-session.interface";
+import { UserAgent } from "@interfaces/common/useragent.interface";
 import { DataStoredInToken, RequestWithUser } from "@interfaces/authentication/token.interface";
+
 import { AuthService } from "@services/auth.service";
+import { getUserAgent } from "@utils/userAgent";
 
 const getAuthorization = (req: Request) => {
   const coockie = req.cookies["Authorization"];
@@ -21,23 +24,30 @@ const getAuthorization = (req: Request) => {
 export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
     const Authorization = getAuthorization(req);
-    
+    const userAgentPayload: UserAgent = getUserAgent(req);
+
     if (Authorization) {
       const { uid, sid } = verify(Authorization, SECRET_KEY) as DataStoredInToken;
-      const userSession: UserSession = await new AuthService().checkSessionActive({ uid, sid });
+      const userSession: UserSession = await new AuthService().checkSessionActive({ sid });
       
+      console.log("SESSION ID ", sid);
       if (userSession?.user?.uuid === uid) {
-        req.session_id = sid;
-        req.user = userSession.user;
-        next();
+        if(userAgentPayload.source === userSession.useragent) {
+          req.session_id = sid;
+          req.user = userSession.user;
+          
+          next();
+        } else {
+          next(new HttpException(false, 401, "Invalid Token #39"));
+        }
       } else {
-        next(new HttpException(false, 401, "Invalid Token #34"));
+        next(new HttpException(false, 401, "Invalid Token #42"));
       }
     } else {
-      next(new HttpException(false, 401, "Invalid Token #37"));
+      next(new HttpException(false, 401, "Invalid Token #45"));
     }
   } catch (error) {
     console.error(error);
-    next(new HttpException(false, 401, "Invalid Token #41"));
+    next(new HttpException(false, 401, "Invalid Token #49"));
   }
 };

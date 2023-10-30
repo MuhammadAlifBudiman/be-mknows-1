@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
 import { UserSession } from "@interfaces/user-session.interface";
 
-import { UserModel } from '@models/users.model';
+import { UserModel } from "@models/users.model";
 
 export type UserSessionCreationAttributes = Optional<UserSession, "pk" | "uuid">;
 
@@ -12,7 +12,7 @@ export class UserSessionModel extends Model<UserSession, UserSessionCreationAttr
   public user_id: number;
   public useragent: string;
   public ip_address: string;
-  public status: string;
+  public status: string; // ["EXPIRED", "ACTIVE", "LOGOUT"]
 
   public readonly user: UserModel;
 

@@ -63,7 +63,7 @@ export class AuthService {
     return logout;
   }
 
-  public async checkSessionActive(data: { uid: string, sid: string }): Promise<UserSession> {
+  public async checkSessionActive(data: { sid: string }): Promise<UserSession> {
     const userSession = await DB.UsersSessions.findOne({ 
       where: { uuid: data.sid, status: "ACTIVE" },
       include: [{ model: DB.Users, as: "user" }]

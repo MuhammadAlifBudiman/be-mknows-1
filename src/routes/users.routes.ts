@@ -16,6 +16,7 @@ export class UserRoute implements Routes {
   }
 
   private initializeRoutes() {
+    this.router.get(`/v1/users/check`, this.user.getUseragent);
     this.router.get(`/v1/${this.path}`, AuthMiddleware, this.user.getUsers);
     
     this.router.get(`/v1/${this.path}/:id`, this.user.getUserById);

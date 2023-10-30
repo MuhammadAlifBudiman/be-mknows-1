@@ -1,4 +1,4 @@
-export interface PaginationI {
+export interface Pagination {
   current_page: number;
   size_page: number;
   max_page: number;

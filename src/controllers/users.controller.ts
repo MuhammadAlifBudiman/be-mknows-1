@@ -3,42 +3,31 @@ import { Container } from "typedi";
 import asyncHandler from "express-async-handler";
 
 import { CreateUserDto } from "@dtos/users.dto";
-import { User } from "@interfaces/users.interface";
+import { User } from "@interfaces/user.interface";
 import { UserService } from "@services/users.service";
+import { apiResponse } from "@/utils/apiResponse";
 
 export class UserController {
   public user = Container.get(UserService);
 
   public getUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const findAllUsersData: User[] = await this.user.findAllUser();
+    const findAllUsersData: User[] = await this.user.findAllUser();
 
-      res.status(200).json({ data: findAllUsersData, message: "findAll" });
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json(apiResponse(200, "OK", "All Users Retrieved", findAllUsersData));
   });
 
   public getUserById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = Number(req.params.id);
-      const findOneUserData: User = await this.user.findUserById(userId);
+    const userId = Number(req.params.id);
+    const findOneUserData: User = await this.user.findUserById(userId);
 
-      res.status(200).json({ data: findOneUserData, message: "findOne" });
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json({ data: findOneUserData, message: "findOne" });
   });
 
   public createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userData: CreateUserDto = req.body;
-      const createUserData: User = await this.user.createUser(userData);
+    const userData: CreateUserDto = req.body;
+    const createUserData: User = await this.user.createUser(userData);
 
-      res.status(201).json({ data: createUserData, message: "created" });
-    } catch (error) {
-      next(error);
-    }
+    res.status(201).json({ data: createUserData, message: "created" });
   });
 
   public updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

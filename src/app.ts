@@ -6,8 +6,10 @@ import express from "express";
 import helmet from "helmet";
 import hpp from "hpp";
 import morgan from "morgan";
+import userAgent from "express-useragent";
+import requestIp from "request-ip";
 
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@config";
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from "@config/index";
 import { DB } from "@database";
 import { Routes } from "@interfaces/routes.interface";
 import { ErrorMiddleware } from "@middlewares/error.middleware";
@@ -15,8 +17,8 @@ import { logger, stream } from "@utils/logger";
 
 export class App {
   public app: express.Application;
-  public env: string;
-  public port: string | number;
+  private readonly env: string;
+  private readonly port: string | number;
 
   constructor(routes: Routes[]) {
     this.app = express();
@@ -52,9 +54,11 @@ export class App {
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
-    this.app.use(express.json());
+    this.app.use(express.json({ limit: "200mb", type: "application/json" }))
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(requestIp.mw());
+    this.app.use(userAgent.express());
   }
 
   private initializeRoutes(routes: Routes[]) {

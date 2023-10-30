@@ -13,3 +13,9 @@ export class HttpException extends Error {
     this.errors = errors;
   }
 }
+
+export class HttpExceptionTooManyRequests extends HttpException {
+  constructor(errors: string[]) {
+    super(false, 429, "TOO_MANY_REQUEST", errors);
+  }
+}

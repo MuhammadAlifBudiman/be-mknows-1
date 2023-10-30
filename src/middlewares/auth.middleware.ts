@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 
-import { DB } from "@database";
-import { SECRET_KEY } from "@config";
+import { SECRET_KEY } from "@config/index";
 import { HttpException } from "@exceptions/HttpException";
-import { DataStoredInToken, RequestWithUser } from "@interfaces/auth.interface";
+
+import { UserSession } from "@interfaces/user-session.interface";
+import { DataStoredInToken, RequestWithUser } from "@interfaces/authentication/token.interface";
+import { AuthService } from "@services/auth.service";
 
 const getAuthorization = (req: Request) => {
   const coockie = req.cookies["Authorization"];
@@ -21,19 +23,21 @@ export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: 
     const Authorization = getAuthorization(req);
     
     if (Authorization) {
-      const { uid } = verify(Authorization, SECRET_KEY) as DataStoredInToken;
-      const findUser = await DB.Users.findOne({ where: { uuid: uid}});
-
-      if (findUser) {
-        req.user = findUser;
+      const { uid, sid } = verify(Authorization, SECRET_KEY) as DataStoredInToken;
+      const userSession: UserSession = await new AuthService().checkSessionActive({ uid, sid });
+      
+      if (userSession?.user?.uuid === uid) {
+        req.session_id = sid;
+        req.user = userSession.user;
         next();
       } else {
-        next(new HttpException(false, 401, "Wrong authentication token #1"));
+        next(new HttpException(false, 401, "Invalid Token #34"));
       }
     } else {
-      next(new HttpException(false, 404, "Authentication token missing"));
+      next(new HttpException(false, 401, "Invalid Token #37"));
     }
   } catch (error) {
-    next(new HttpException(false, 401, "Wrong authentication token #2"));
+    console.error(error);
+    next(new HttpException(false, 401, "Invalid Token #41"));
   }
 };

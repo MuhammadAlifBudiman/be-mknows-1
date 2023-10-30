@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
-import { User } from "@interfaces/users.interface";
+import { User } from "@interfaces/user.interface";
 
 export type UserCreationAttributes = Optional<User, "pk" | "uuid" | "full_name" | "display_picture">;
 
@@ -52,6 +52,9 @@ export default function (sequelize: Sequelize): typeof UserModel {
       timestamps: true,
       paranoid: true,
       sequelize,
+      defaultScope: {
+        attributes: { exclude: ["password"] },
+      },
     },
   );
 

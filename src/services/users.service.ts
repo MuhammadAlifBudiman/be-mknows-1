@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { DB } from "@database";
 import { CreateUserDto } from "@dtos/users.dto";
 import { HttpException } from "@/exceptions/HttpException";
-import { User } from "@interfaces/users.interface";
+import { User } from "@interfaces/user.interface";
 
 @Service()
 export class UserService {

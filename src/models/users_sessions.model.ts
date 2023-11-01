@@ -59,14 +59,8 @@ export default function (sequelize: Sequelize): typeof UserSessionModel {
     },
   );
 
-  UserSessionModel.hasOne(UserModel, {
-    sourceKey: "user_id",
-    foreignKey: "pk",
-    as: "user"
-  });
-
-  UserModel.belongsTo(UserSessionModel, {
-    foreignKey: "pk",
+  UserSessionModel.belongsTo(UserModel, {
+    foreignKey: "user_id",
     as: "user"
   });
 

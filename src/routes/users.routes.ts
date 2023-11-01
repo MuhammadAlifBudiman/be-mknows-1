@@ -3,7 +3,7 @@ import { Routes } from "@interfaces/routes.interface";
 
 import { UserController } from "@controllers/users.controller";
 import { ValidationMiddleware } from "@middlewares/validation.middleware";
-import { AuthMiddleware } from "@middlewares/auth.middleware";
+import { AuthMiddleware, AuthorizedRoles } from "@middlewares/auth.middleware";
 import { CreateUserDto } from "@dtos/users.dto";
 
 export class UserRoute implements Routes {
@@ -17,7 +17,7 @@ export class UserRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`/v1/users/check`, this.user.getUseragent);
-    this.router.get(`/v1/${this.path}`, AuthMiddleware, this.user.getUsers);
+    this.router.get(`/v1/${this.path}`, AuthMiddleware, AuthorizedRoles(["ADMIN"]), this.user.getUsers);
     
     this.router.get(`/v1/${this.path}/:id`, this.user.getUserById);
     this.router.post(`/v1/${this.path}`, ValidationMiddleware(CreateUserDto), this.user.createUser);

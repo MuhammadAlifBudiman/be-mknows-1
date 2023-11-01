@@ -6,9 +6,9 @@ import { SECRET_KEY } from "@config/index";
 import { DB } from "@database";
 
 import { User } from "@interfaces/user.interface";
+import { UserRole } from "@interfaces/authentication/user-role.interface";
 import { UserSession } from "@interfaces/user-session.interface";
 import { UserAgent } from "@interfaces/common/useragent.interface";
-
 import { DataStoredInToken, TokenPayload } from "@interfaces/authentication/token.interface";
 
 import { CreateUserDto } from "@dtos/users.dto";
@@ -16,7 +16,7 @@ import { HttpException } from "@exceptions/HttpException";
 
 const createAccessToken = (user: User, userSession: UserSession): TokenPayload => {
   const dataStoredInToken: DataStoredInToken = { uid: user.uuid, sid: userSession.uuid };
-  const expiresIn: number = 60 * 60;
+  const expiresIn: number = 60 * 60 * 60;
 
   return { expiresIn: expiresIn, token: sign(dataStoredInToken, SECRET_KEY, { expiresIn }) };
 };  
@@ -27,14 +27,17 @@ const createCookie = (TokenPayload: TokenPayload): string => {
 
 @Service()
 export class AuthService {
-  public async signup(userData: CreateUserDto): Promise<User> {
-    const findUser: User = await DB.Users.findOne({ where: { email: userData.email } });
-    if (findUser) throw new HttpException(false, 409, `This email ${userData.email} already exists`);
+  public async signup(userData: CreateUserDto): Promise<{ uuid: string, email: string }> {
+    const existingUser = await DB.Users.findOne({ where: { email: userData.email } });
+    if (existingUser) throw new HttpException(false, 409, `This email ${userData.email} already exists`);
 
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = await DB.Users.create({ ...userData, password: hashedPassword });
+    const createUser = await DB.Users.create({ ...userData, password: hashedPassword });
 
-    return createUserData;
+    const roleId = await this.getRoleId("USER");
+    await this.asignUserRole(createUser.pk, roleId);
+
+    return { uuid: createUser.uuid, email: createUser.email };
   }
 
   public async login(userData: CreateUserDto, userAgent: UserAgent): Promise<{ cookie: string; accessToken: string }> {
@@ -44,7 +47,7 @@ export class AuthService {
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(false, 409, "Password not matching");
 
-    const sessionData = await this.createSession({ 
+    const sessionData = await this.createUserSession({ 
       pk: findUser.pk, useragent: userAgent.source, ip_address: userAgent.ip_address
     });
 
@@ -63,13 +66,22 @@ export class AuthService {
     return logout;
   }
 
-  public async checkSessionActive(data: { sid: string }): Promise<UserSession> {
+  public async checkSessionActive(session_id: string): Promise<UserSession> {
     const userSession = await DB.UsersSessions.findOne({ 
-      where: { uuid: data.sid, status: "ACTIVE" },
+      where: { uuid: session_id, status: "ACTIVE" },
       include: [{ model: DB.Users, as: "user" }]
     });
 
     return userSession || null;
+  };
+
+  public async getUserRoles(user_id: number): Promise<UserRole[]> {
+    const roles = await DB.UsersRoles.findAll({ 
+      where: { user_id },
+      include: [{ model: DB.Roles, as: "role" }]
+    });
+
+    return roles;
   };
 
   public async logoutSessionActive(data: { uid: string, sid: string }): Promise<boolean> {
@@ -87,7 +99,7 @@ export class AuthService {
     }
   }
 
-  public async createSession(data: { pk: number, useragent: string, ip_address: string }): Promise<UserSession> {
+  public async createUserSession(data: { pk: number, useragent: string, ip_address: string }): Promise<UserSession> {
     const session = await DB.UsersSessions.create({
       user_id: data.pk,
       useragent: data.useragent,
@@ -97,4 +109,14 @@ export class AuthService {
 
     return session;
   };
+
+  private async getRoleId(name: string): Promise<number> {
+    const role = await DB.Roles.findOne({ where: { name }});
+    return role.pk;
+  }
+
+  private async asignUserRole(user_id: number, role_id: number): Promise<UserRole> {
+    const role = await DB.UsersRoles.create({ user_id, role_id });
+    return role;
+  }
 }

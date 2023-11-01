@@ -1,8 +1,6 @@
 import { User } from "@interfaces/user.interface";
 
 export interface UserSession {
-  get(): any;
-  
   pk: number;
   uuid: string;
 
@@ -11,5 +9,6 @@ export interface UserSession {
   ip_address: string;
   status: string;
 
+  is_current?: boolean;
   user?: User;
 }

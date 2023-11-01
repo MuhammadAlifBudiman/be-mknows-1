@@ -17,4 +17,5 @@ export interface TokenPayload {
 export interface RequestWithUser extends Request {
   session_id: string;
   user: User;
+  user_roles: string[];
 }

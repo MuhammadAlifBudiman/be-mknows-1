@@ -36,7 +36,6 @@ export class App {
       logger.info("=================================");
       logger.info(`======= ENV: ${this.env} =======`);
       logger.info(`🚀 App listening on the port ${this.port}`);
-      logger.info("=================================");
     });
   }
 
@@ -45,7 +44,7 @@ export class App {
   }
 
   private async connectToDatabase() {
-    await DB.sequelize.sync({ force: false });
+    await DB.sequelize.sync({ alter: true, force: false });
   }
 
   private initializeMiddlewares() {

@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 
 import { AuthService } from "@services/auth.service";
 
-import { User } from "@interfaces/user.interface";
+import { User, UserResponse } from "@interfaces/user.interface";
 import { RequestWithUser } from "@interfaces/authentication/token.interface";
 import { UserAgent } from "@interfaces/common/useragent.interface";
 
@@ -18,9 +18,9 @@ export class AuthController {
 
   public signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const userData: CreateUserDto = req.body;
-    const signUpUserData: User = await this.auth.signup(userData);
+    const signUpUserData: UserResponse = await this.auth.signup(userData);
 
-    res.status(201).json(apiResponse(201, "OK", "Register Success", { ...signUpUserData }));
+    res.status(201).json(apiResponse(201, "OK", "Register Success", signUpUserData));
   });
 
   public logIn = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -34,16 +34,12 @@ export class AuthController {
   });
 
   public logOut = asyncHandler(async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    try {
-      const userData: User = req.user;
-      const userSessionId: string = req.session_id;
+    const userData: User = req.user;
+    const userSessionId: string = req.session_id;
 
-      await this.auth.logout(userData, userSessionId);
+    await this.auth.logout(userData, userSessionId);
 
-      res.setHeader("Set-Cookie", ["Authorization=; Max-age=0"]);
-      res.status(200).json(apiResponse(200, "OK", "Logout Success", {}));
-    } catch (error) {
-      next(error);
-    }
+    res.setHeader("Set-Cookie", ["Authorization=; Max-age=0"]);
+    res.status(200).json(apiResponse(200, "OK", "Logout Success", {}));
   });
 }

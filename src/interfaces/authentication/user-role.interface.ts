@@ -6,7 +6,8 @@ export interface Role {
 }
 
 export interface UserRole {
-  role: Role;
+  role?: Role;
+  
   user_id: number;
   role_id: number;
 }

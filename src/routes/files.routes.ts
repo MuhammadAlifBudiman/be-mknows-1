@@ -20,7 +20,7 @@ export class FileRouter implements Routes {
       `/v1/${this.path}/upload`, 
       AuthMiddleware,
       uploadFile.single("file"), 
-      this.file.uploadImage
+      this.file.uploadFile
     );
   }
 }

@@ -19,7 +19,7 @@ export const uploadFile = multer({
   }),
   
   fileFilter(req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
-    if (!file.mimetype.match(/^image|application\/(jpg|jpeg|png)$/)) {
+    if (!file.mimetype.match(/^image|application\/(jpg|jpeg|png)$/)) { // Regex
       return callback(new HttpException(false, 400, "Invalid File Format"));
     }
     callback(null, true);

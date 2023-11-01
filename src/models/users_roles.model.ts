@@ -10,7 +10,7 @@ export class UserRoleModel extends Model<UserRole, UserRoleCreationAttributes> i
   public user_id: number;
   public role_id: number;
 
-  public role: RoleModel;
+  public role?: RoleModel;
 
   public readonly created_at!: Date;
   public readonly updated_at!: Date;

@@ -11,7 +11,7 @@ import { HttpException } from '@/exceptions/HttpException';
 export class FileController {
   private file = Container.get(FileService);
 
-  public uploadImage = asyncHandler(async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public uploadFile = asyncHandler(async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const image = req.file as Express.Multer.File;
     const user_id = req.user.pk as number;
 

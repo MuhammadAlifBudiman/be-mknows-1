@@ -27,5 +27,10 @@ export class FileRouter implements Routes {
       AuthMiddleware,
       this.file.getMyFiles
     );
+    this.router.get(
+      `/v1/${this.path}/:file_id/preview`,
+      AuthMiddleware,
+      this.file.previewFile
+    );
   }
 }

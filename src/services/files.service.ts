@@ -20,4 +20,9 @@ export class FileService {
     const userFiles = await DB.Files.findAll({ where: { user_id } });
     return userFiles;
   }
+
+  public async getPreviewFile(user_id: number, file_id: string): Promise<File | null> {
+    const file = await DB.Files.findOne({ where: { pk: file_id, user_id } });
+    return file;
+  }
 };

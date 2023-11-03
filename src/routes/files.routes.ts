@@ -22,5 +22,10 @@ export class FileRouter implements Routes {
       uploadFile.single("file"), 
       this.file.uploadFile
     );
+    this.router.get(
+      `/v1/${this.path}/mine`,
+      AuthMiddleware,
+      this.file.getMyFiles
+    );
   }
 }

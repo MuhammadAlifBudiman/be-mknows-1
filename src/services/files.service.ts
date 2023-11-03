@@ -15,4 +15,9 @@ export class FileService {
 
     return fileUpload;
   };
+
+  public async getUserFiles(user_id: number): Promise<File[]> {
+    const userFiles = await DB.Files.findAll({ where: { user_id } });
+    return userFiles;
+  }
 };

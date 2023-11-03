@@ -20,4 +20,11 @@ export class FileController {
     const response = await this.file.uploadSingleFile(user_id, image);
     res.status(201).json(apiResponse(201, "OK", "Upload Success", response));
   });
+
+  public getMyFiles = asyncHandler(async (req: RequestWithUser, res: Response, next: NextFunction) => {
+      const user_id = req.user.pk as number;
+      const files = await this.file.getUserFiles(user_id);
+      res.status(200).json(apiResponse(200, "OK", "User's Files", files));
+    }
+  );
 }
